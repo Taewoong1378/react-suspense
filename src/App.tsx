@@ -1,25 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
+import { Suspense, useState } from 'react';
+import { fetchData, User as SuspenseUser } from './after';
 import './App.css';
+import { User as NonSuspenseUser } from './before';
 
 function App() {
+  const [useSuspense, setUseSuspense] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <button onClick={() => setUseSuspense((prev) => !prev)}>
+        Suspense {useSuspense ? '끄기' : '켜기'}
+      </button>
+      <hr />
+      {useSuspense ? (
+        <main>
+          <h2>Suspense 사용</h2>
+          <Suspense fallback={<p>사용자 정보 로딩중...</p>}>
+            <SuspenseUser resource={fetchData('1')} />
+          </Suspense>
+        </main>
+      ) : (
+        <main>
+          <h2>Suspense 미사용</h2>
+          <NonSuspenseUser userId="1" />
+        </main>
+      )}
+    </>
   );
 }
 
